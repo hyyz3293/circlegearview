@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="CGViewStyleable">
+        <!-- 中间文字颜色、字体大小、状态值-->
+        <attr name="center_txt_color" format="color"/>
+        <attr name="center_txt_size" format="dimension"/>
+        <attr name="center_txt_bottom_size" format="dimension"/>
+        <attr name="center_txt_status" format="string" />
+
+        <!-- 圆的宽度 -->
+        <attr name="round_width" format="dimension"/>
+        <attr name="round_color" format="color"/>
+        <attr name="inner_round_width" format="dimension"/>
+        <attr name="inner_round_color" format="color"/>
+
+
+
+
+
+        <!--&lt;!&ndash;扩散圆颜色&ndash;&gt;-->
+        <!--<attr name="diffuse_color" format="color" />-->
+        <!--&lt;!&ndash;中心圆颜色&ndash;&gt;-->
+        <!--<attr name="diffuse_coreColor" format="color" />-->
+        <!--&lt;!&ndash;中心圆图片&ndash;&gt;-->
+        <!--<attr name="diffuse_coreImage" format="reference" />-->
+        <!--&lt;!&ndash;中心圆半径&ndash;&gt;-->
+        <!--<attr name="diffuse_coreRadius" format="dimension" />-->
+
+        <!--&lt;!&ndash;新增&ndash;&gt;-->
+
+        <!--&lt;!&ndash;扩散圆是否为椭圆&ndash;&gt;-->
+        <!--<attr name="rings_isOval" format="boolean" />-->
+        <!--&lt;!&ndash;扩散椭圆的矩形外接矩形的 高／宽&ndash;&gt;-->
+        <!--<attr name="rings_ovalScale" format="float" />-->
+        <!--&lt;!&ndash;中心位置是否为椭圆&ndash;&gt;-->
+        <!--<attr name="rings_isCenterOval" format="boolean" />-->
+        <!--&lt;!&ndash;中心椭圆的外接矩形的宽&ndash;&gt;-->
+        <!--<attr name="rings_centerOvalWidth" format="dimension" />-->
+        <!--&lt;!&ndash;中心椭圆的外接矩形的高&ndash;&gt;-->
+        <!--<attr name="rings_centerOvalHeight" format="dimension" />-->
+        <!--&lt;!&ndash;扩散圆的最大个数：扩散范围内可同时出现的最多圆数&ndash;&gt;-->
+        <!--<attr name="rings_num" format="integer" />-->
+
+        <!--&lt;!&ndash;是否为圆环&ndash;&gt;-->
+        <!--<attr name="rings_isRing" format="boolean" />-->
+        <!--&lt;!&ndash;圆环宽度&ndash;&gt;-->
+        <!--<attr name="rings_ringWidth" format="dimension" />-->
+        <!--&lt;!&ndash;填充圆颜色：建议为屏幕背景色 默认为白色&ndash;&gt;-->
+        <!--<attr name="rings_spaceColor" format="color" />-->
+
+    </declare-styleable>
+
+
+
+</resources>
