@@ -10,6 +10,8 @@
     <com.tool.jackntest.ui.widget.CircleGearView2
         android:id="@+id/test"
         android:background="@color/black"
+
+
         app:center_txt_color="@color/white"
         app:center_txt_size="47sp"
         app:center_txt_bottom_size="13sp"

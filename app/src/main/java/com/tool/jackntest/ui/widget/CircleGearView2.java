@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PointF;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -20,7 +22,7 @@ public class CircleGearView2 extends View {
 
     private int centerX, centerY;
     private int radius, roundRadius;
-    private int paddingOuterThumb;
+    private int paddingOuterThumb;//外边距
 
     private int minValidateTouchArcRadius; // 最小有效点击半径
     private int maxValidateTouchArcRadius; // 最大有效点击半径
@@ -36,6 +38,12 @@ public class CircleGearView2 extends View {
 
 
     private int mTxtProgress = 1; // 显示进度
+    private int max = 72; // 最大进度 -- 总共72个刻度 所以这样定义
+    private int progress = 1;
+
+
+    private double mOuterRoundProgress = 36.5f;//外圈进度
+    private boolean mOuterSences = true; //true 正向----false方向
 
     public CircleGearView2(Context context) {
         this(context, null);
@@ -71,6 +79,9 @@ public class CircleGearView2 extends View {
         mInnerRoundWidth = typedArray.getDimension(R.styleable.CGViewStyleable_inner_round_width, DensityUtil.dp2px(2));
         mInnerRoundColor = typedArray.getColor(R.styleable.CGViewStyleable_inner_round_color, getResources().getColor(R.color.white33));
 
+
+
+        paddingOuterThumb = DensityUtil.dp2px(20);
     }
 
     @Override
@@ -120,18 +131,71 @@ public class CircleGearView2 extends View {
         mPaint.setShadowLayer(33, 0, 0, mMainColor);
         mPaint.setColor(mMainColor);
 
-        //第一步:画背景(即内层圆)
+        //第一步：画背景(即内层圆)
         mPaint.setColor(mInnerRoundColor); //设置圆的颜色
         mPaint.setStyle(Paint.Style.STROKE); //设置空心
         mPaint.setStrokeWidth(mInnerRoundWidth); //设置圆的宽度
         mPaint.setAntiAlias(true);  //消除锯齿
         canvas.drawCircle(centerX, centerY, roundRadius, mPaint); //画出圆
 
+        //第二步：圆弧
+        mPaint.setStrokeWidth(DensityUtil.dp2px(6)); //设置圆环的宽度
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setColor(getResources().getColor(R.color.maincolor));  //设置进度的颜色
+        RectF oval = new RectF(centerX - roundRadius  , centerY - roundRadius , centerX + roundRadius , centerY +
+                roundRadius);  //用于定义的圆弧的形状和大小的界限
+        mPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawArc(oval, 270, 360 * progress / max, false, mPaint);  //根据进度画圆弧
+        /** 画圆 end  */
 
-        /** 画圆 start */
 
+        /** 画刻度-72份- 还分正反切换---start */
+        mPaint.setStrokeWidth(DensityUtil.dp2px(2));
+        for (int i = 0; i < 72; i++){
+            //radius:模糊半径，radius越大越模糊，越小越清晰，但是如果radius设置为0，则阴影消失不见
+            //dx:阴影的横向偏移距离，正值向右偏移，负值向左偏移
+            //dy:阴影的纵向偏移距离，正值向下偏移，负值向上偏移
+            //color: 绘制阴影的画笔颜色，即阴影的颜色（对图片阴影无效）
 
-
+            if (i < mOuterRoundProgress) {
+                if (mOuterSences) {
+                    mPaint.setShadowLayer(30, 0, 0, mMainColor);
+                    mPaint.setColor(getResources().getColor(R.color.maincolor));
+                } else
+                    mPaint.setColor(getResources().getColor(R.color.white33));
+            } else {
+                if (mOuterSences)
+                    mPaint.setColor(getResources().getColor(R.color.white33));
+                else {
+                    mPaint.setShadowLayer(30, 0, 0, mMainColor);
+                    mPaint.setColor(getResources().getColor(R.color.maincolor));
+                }
+            }
+            float mProgress = (i)*1.0f/72*max;
+            PointF mProgressPoint = ChartUtils.calcArcEndPointXY(centerX, centerY, radius, 360 * mProgress / max, 270);
+            //圆上到圆心
+            //canvas.drawLine(mProgressPoint.x,mProgressPoint.y,centerX,centerY,paint);
+            float scale1 = radius * 1.0F / mRoundWidth;
+            float scale2 = radius * 1.0F / (radius - mRoundWidth);
+            //计算内圆上的点
+            float disX = (scale1*mProgressPoint.x + scale2*centerX)/(scale1+ scale2);
+            float disY =  (scale1*mProgressPoint.y + scale2*centerY)/(scale1+ scale2);
+            //计算外圆上的点
+            float disX2 = mProgressPoint.x*2 - disX;
+            float disY2 =  mProgressPoint.y*2 - disY;
+            if (mProgress%6 == 0){
+                //直线3/4高度
+                float disX3 = (disX*3 + disX2)/4;
+                float disY3 =  (disY*3 + disY2)/4;
+                canvas.drawLine(disX2 ,disY2,disX,disY, mPaint);
+            }else{
+                //直线1/2高度
+                float disX3 = (disX*1 + disX2)/2;
+                float disY3 =  (disY*1 + disY2)/2;
+                canvas.drawLine(disX3 ,disY3,disX,disY, mPaint);
+            }
+        }
+        /** 画刻度-72份- 还分正反切换---end */
 
     }
 

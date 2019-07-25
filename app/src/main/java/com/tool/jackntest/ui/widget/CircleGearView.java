@@ -37,9 +37,9 @@ public class CircleGearView extends View {
     /** 中间进度百分比的字符串的字体*/
     private float textSize;
     /** 点的半径*/
-    private float pointRadius;
+    //private float pointRadius;
     /** 空心点的宽度*/
-    private float pointWidth;
+    //private float pointWidth;
     /**有记录的时间段*/
     private int[] hours;
 
@@ -78,8 +78,8 @@ public class CircleGearView extends View {
         //最大刻度
         //max = 100;
         max = 72;
-        pointRadius = 3;
-        pointWidth = 2;
+        //pointRadius = 3;
+        //pointWidth = 2;
 
         // 加载拖动图标
 //        mDragDrawable = getResources().getDrawable(R.drawable.ring_dot);// 圆点图片
