@@ -13,6 +13,7 @@
     <color name="transparent">#00000000</color>
     <color name="white33">#33FFFFFF</color>
 
-
+    <color name="gary333">#333333</color>
+    <color name="ff5b2c">#ff5b2c</color>
 
 </resources>

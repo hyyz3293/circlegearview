@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.tool.jackntest.R;
@@ -39,11 +40,14 @@ public class CircleGearView2 extends View {
 
     private int mTxtProgress = 1; // 显示进度
     private int max = 72; // 最大进度 -- 总共72个刻度 所以这样定义
-    private int progress = 1;
+    private float progress = 1;
 
-
-    private double mOuterRoundProgress = 36.5f;//外圈进度
+    private long mOuterRoundTime = 2000;//毫秒
+    private double mOuterRoundProgress = 0f;//外圈进度
     private boolean mOuterSences = true; //true 正向----false方向
+    private float mCount = 0f;
+    private double mCountG = 0f;
+    private int mIntCount = 0;
 
     public CircleGearView2(Context context) {
         this(context, null);
@@ -78,7 +82,6 @@ public class CircleGearView2 extends View {
 
         mInnerRoundWidth = typedArray.getDimension(R.styleable.CGViewStyleable_inner_round_width, DensityUtil.dp2px(2));
         mInnerRoundColor = typedArray.getColor(R.styleable.CGViewStyleable_inner_round_color, getResources().getColor(R.color.white33));
-
 
 
         paddingOuterThumb = DensityUtil.dp2px(20);
@@ -171,10 +174,9 @@ public class CircleGearView2 extends View {
                     mPaint.setColor(getResources().getColor(R.color.maincolor));
                 }
             }
-            float mProgress = (i)*1.0f/72*max;
+            float mProgress = (i)* 1.0f/ 72 * max;
             PointF mProgressPoint = ChartUtils.calcArcEndPointXY(centerX, centerY, radius, 360 * mProgress / max, 270);
             //圆上到圆心
-            //canvas.drawLine(mProgressPoint.x,mProgressPoint.y,centerX,centerY,paint);
             float scale1 = radius * 1.0F / mRoundWidth;
             float scale2 = radius * 1.0F / (radius - mRoundWidth);
             //计算内圆上的点
@@ -185,8 +187,6 @@ public class CircleGearView2 extends View {
             float disY2 =  mProgressPoint.y*2 - disY;
             if (mProgress%6 == 0){
                 //直线3/4高度
-                float disX3 = (disX*3 + disX2)/4;
-                float disY3 =  (disY*3 + disY2)/4;
                 canvas.drawLine(disX2 ,disY2,disX,disY, mPaint);
             }else{
                 //直线1/2高度
@@ -200,14 +200,88 @@ public class CircleGearView2 extends View {
     }
 
 
+    public void setProgressX(long time, boolean mSence){
+        this.mOuterSences = mSence;
+        this.mOuterRoundTime = time;
+        startProgressX();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (mIntCount < mCount) {
+                        //需要执行的代码
+                        if (mOuterSences) {
+                            mOuterRoundProgress = getOuterProger(mIntCount);
+                        } else {
+                            mOuterRoundProgress = getOuterProger2(mIntCount);
+                        }
+                        Log.e("tag", mOuterRoundProgress + "");
+                        mIntCount++;
+                        postInvalidate();
+                        Thread.sleep(10);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }
 
+    private void startProgressX() {
+        //使用自由落體的公式---h=1/2*g*t2
+        mCount = 0f;
+        mCountG = 0f;
+        mCount = (int) mOuterRoundTime / 10; //默认每50毫秒执行一次方法
+        //mOuterRoundProgress；
+        mOuterRoundProgress = 0f;
+        mCountG = 200f / (mCount * mCount);
+        //mCountG = 0.12f;
+        mIntCount = 0;
+    }
 
+    private double getOuterProger(int counts){
+        double progress = 0.5f * mCountG * counts * counts;
+        return  progress;
+    }
 
-
-
+    private double getOuterProger2(int count){
+        double progress = 100 - 0.5f * mCountG * (mCount - count) * (mCount - count);
+        return progress * 72 / 100;
+    }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+    }
+
+    /**
+     * 设置进度，此为线程安全控件，由于考虑多线的问题，需要同步
+     * 刷新界面调用postInvalidate()能在非UI线程刷新
+     *
+     * @param progress
+     */
+    public synchronized void setProgress(float progress) {
+        if (progress < 0) {
+            mTxtProgress = 1;
+            progress = 0;
+        }
+
+        mTxtProgress =  Math.round(progress);
+        float ss = progress * 72 / 100;
+        progress = (int) ss;
+        if (progress < 0) {
+            throw new IllegalArgumentException("progress not less than 0");
+        }
+        if (progress > max) {
+            progress = max;
+            mOuterRoundProgress = progress + 1;
+        }
+        if (progress <= max) {
+            this.progress = progress;
+            mOuterRoundProgress = progress + 1;
+            postInvalidate();
+        }
+
     }
 }

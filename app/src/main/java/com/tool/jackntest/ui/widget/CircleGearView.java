@@ -64,7 +64,7 @@ public class CircleGearView extends View {
     }
 
     private void initView(AttributeSet attrs){
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);  // 关闭硬件加速
+        //setLayerType(View.LAYER_TYPE_SOFTWARE, null);  // 关闭硬件加速
         this.setWillNotDraw(false);                    // 调用此方法后，才会执行 onDraw(Canvas) 方法
         paint = new Paint();
 
@@ -99,7 +99,7 @@ public class CircleGearView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        setLayerType(LAYER_TYPE_SOFTWARE, null);//对单独的View在运行时阶段禁用硬件加速
+        //setLayerType(LAYER_TYPE_SOFTWARE, null);//对单独的View在运行时阶段禁用硬件加速
         initOnDraw(canvas);
     }
 
