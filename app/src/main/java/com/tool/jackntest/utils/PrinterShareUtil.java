@@ -276,12 +276,12 @@ public class PrinterShareUtil {
         intent.setAction("android.intent.action.VIEW");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            File f = new File("file://" + filePath);
+            File f = new File(filePath);
             Uri apkUri = FileProvider.getUriForFile(context, "com.tool.jackntest.fileprovider", f);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             //添加这一句表示对目标应用临时授权该Uri所代表的文件
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            intent.setDataAndType(apkUri, type);
 
             context.startActivity(intent);
         } else {

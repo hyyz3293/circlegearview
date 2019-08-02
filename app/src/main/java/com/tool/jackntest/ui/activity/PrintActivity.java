@@ -37,7 +37,7 @@ public class PrintActivity extends AppCompatActivity {
                                 .withStartPath("/storage/emulated/0")
                                 .withIsGreater(false)
                                 .withMutilyMode(false)
-                                .withFileFilter(new String[]{ ".png", ".docx"})
+                                .withFileFilter(new String[]{ ".png", ".jpg", ".docx"})
                                 .withFileSize(500 * 1024)
                                 .withMaxNum(1)
                                 .start();
@@ -62,13 +62,13 @@ public class PrintActivity extends AppCompatActivity {
             if (requestCode == REQUESTCODE_FROM_ACTIVITY) {
                 //If it is a file selection mode, you need to get the path collection of all the files selected
                 //List<String> list = data.getStringArrayListExtra(Constant.RESULT_INFO);//Constant.RESULT_INFO == "paths"
-                //List<String> list = data.getStringArrayListExtra("paths");
+                List<String> list = data.getStringArrayListExtra("paths");
                 //Toast.makeText(getApplicationContext(), "selected " + list.size(), Toast.LENGTH_SHORT).show();
                 //If it is a folder selection mode, you need to get the folder path of your choice
                 String path = data.getStringExtra("path");
                 //Toast.makeText(getApplicationContext(), "The selected path is:" + path, Toast.LENGTH_SHORT).show();
                 if (PrinterShareUtil.isAppInstalled(this)) {
-                    PrinterShareUtil.startPicturesPrinterShare(this,  path);
+                    PrinterShareUtil.startPicturesPrinterShare(this,  list.get(0));
                 } else {
                     ToastUtils.showShort("请先安装PrintShare打印工具");
                 }
