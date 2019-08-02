@@ -18,6 +18,9 @@ public class TestEntity implements MultiItemEntity {
     public static class ContetEntity {
         public String name;
         public boolean isCheck = false;
+        public String py;
+        public ContetEntity() {
+        }
         public ContetEntity(String name, boolean isCheck) {
             this.name = name;
             this.isCheck = isCheck;

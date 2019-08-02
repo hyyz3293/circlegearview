@@ -3,13 +3,20 @@ package com.tool.jackntest.utils;
 import android.content.Context;
 import android.content.res.AssetManager;
 
+import com.blankj.utilcode.util.StringUtils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tool.jackntest.ui.model.TestEntity;
+
+import net.sourceforge.pinyin4j.PinyinHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AddressDataUtils {
@@ -22,6 +29,39 @@ public class AddressDataUtils {
         return list;
     }
 
+    /** 地址选择-城市數據 */
+    public static List<TestEntity.ContetEntity> getAddressCityList(Context mContext) {
+        String cityStr = getJson(mContext, "provinces.json");
+        List<TestEntity.ContetEntity> list = JsonToObject(cityStr, new TypeToken<List<TestEntity.ContetEntity>>() {}.getType());
+        if (null != list && list.size() > 0) {
+            for (TestEntity.ContetEntity c: list) {
+                if (!StringUtils.isEmpty(c.name)) {
+                    String[] pys = PinyinHelper.toHanyuPinyinStringArray(c.name.charAt(0));
+                    if (pys != null && pys.length > 0) {
+                        if (!StringUtils.isEmpty(pys[0])) {
+                            c.py = pys[0].substring(0, 1).toUpperCase();
+                        }
+                    }
+                }
+            }
+            Collections.sort(list, new Comparator<TestEntity.ContetEntity>() {
+                @Override
+                public int compare(TestEntity.ContetEntity contetEntity, TestEntity.ContetEntity t1) {
+                    return contetEntity.py.compareTo(t1.py);
+                }
+            });
+            String oldPy = "";
+            for (TestEntity.ContetEntity c: list) {
+                String py = c.py;
+                if (!py.equals(oldPy)) {
+                    c.py = py;
+                    oldPy = py;
+                } else
+                    c.py = "";
+            }
+        }
+        return list;
+    }
 
 
 
@@ -55,7 +95,7 @@ public class AddressDataUtils {
      * @param type
      * @return
      */
-    public static <T> T JsonToObject(String json, Class<T> type) {
+    public static <T> T JsonToObject(String json, Type type) {
         Gson gson = new Gson();
         return gson.fromJson(json, type);
     }
